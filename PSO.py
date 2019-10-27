@@ -1,15 +1,25 @@
 import sys
+from Particle import Particle
+from Function import Function
 
 class PSO:
     def __init__(self, topology, sizeSwarm, numIterations, function, dimension):
         self.topology = topology
         self.sizeSwarm = sizeSwarm
         self.numIterations = numIterations
-        self.function = function
+        self.function = Function(function)
         self.dimension = dimension
+        self.globalBestLocation = []
+        self.globalBestValue = 0
+        self.particles = []
+
+    def buildSwarm(self):
+        for i in range(self.sizeSwarm):
+            p = Particle(self.dimension,)
+            self.particles += [p]
 
     def run(self):
-        print()
+        self.buildSwarm()
 
 
 

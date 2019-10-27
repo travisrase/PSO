@@ -4,3 +4,12 @@ class Particle:
         self.functionValue = function(self.location)
         self.velocity = 0
         self.personalBest = [0]*dimension
+
+    #getter method
+    def getLocation(self):
+        return self.location
+
+    #setter method for location
+    def setLocation(self,location):
+        self.location = location
+        
