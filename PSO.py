@@ -21,6 +21,16 @@ class PSO:
             p = Particle(self.dimension,self.function)
             self.particles += [p]
         #check for global best
+        self.updateGlobalBest()
+
+    def updateSwarm(self):
+        for particle in self.particles:
+            nhBest = self.NH.getBestNeighbor(self.particles,particle.location())
+            particle.updateLocation(nhBest)
+
+
+    #this method will look through all particles and find the global best
+    def updateGlobalBest(self):
         for particle in self.particles:
             if particle.pBest() > self.globalBestValue:
                 self.globalBestValue = particle.pBest()
@@ -28,6 +38,9 @@ class PSO:
 
     def run(self):
         self.buildSwarm()
+        for i in range(self.numIterations):
+            self.updateSwarm()
+
 
 
 

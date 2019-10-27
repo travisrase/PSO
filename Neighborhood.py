@@ -3,5 +3,8 @@ class Neighborhood:
         self.neighborhoodType = NeighborhoodType
         self.dimension = dimension
 
-    def getBestNeighbor(self):
+    #given all the particles in the swarm and the location
+    #of a particle, it will return the location of the best
+    #particle in its neighborhood. 
+    def getBestNeighbor(self,particles,position):
         return [0]
