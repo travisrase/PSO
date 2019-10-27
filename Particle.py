@@ -6,15 +6,12 @@ class Particle:
         self.funcType = funcType
         #the location of the particle
         self.location = []
-        #initialize random location
-        for i in range (dimension):
-            self.location += [random.random()]
+        #particle velocity
+        self.velocity = []
         #personal best found, initialize as current position
         self.pBest = self.location
         #evaluation function
         self.function = function
-        #particle velocity
-        self.velocity = []
         #personal best acceleration coefficient
         self.phi1 = 2.05
         #global best acceleration coefficient

@@ -25,7 +25,7 @@ class PSO:
         self.updateGlobalBest()
 
     #this method will individiually update partciles based on their personal
-    #best location and their neighborhood best location 
+    #best location and their neighborhood best location
     def updateSwarm(self):
         for particle in self.particles:
             nhBest = self.NH.getBestNeighbor(self.particles,particle.location())
