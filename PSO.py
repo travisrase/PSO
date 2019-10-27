@@ -7,7 +7,7 @@ class PSO:
         self.topology = topology
         self.sizeSwarm = sizeSwarm
         self.numIterations = numIterations
-        self.function = Function(function)
+        self.function = Function(function,dimension)
         self.dimension = dimension
         self.globalBestLocation = []
         self.globalBestValue = 0
