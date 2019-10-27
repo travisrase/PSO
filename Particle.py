@@ -1,7 +1,10 @@
 import random
 
 class Particle:
-    def __init__(self, dimension, function):
+    def __init__(self, dimension, function, funcType):
+        #used to initialize starting velocity and position
+        self.funcType = funcType
+        #the location of the particle
         self.location = []
         #initialize random location
         for i in range (dimension):
@@ -11,7 +14,7 @@ class Particle:
         #evaluation function
         self.function = function
         #particle velocity
-        self.velocity = 0
+        self.velocity = []
         #personal best acceleration coefficient
         self.phi1 = 2.05
         #global best acceleration coefficient
@@ -19,6 +22,12 @@ class Particle:
         #constriction factor
         self.phi = phi1 + phi2
         self.constrictionFactor = 0.7298
+
+    def initPosition(self):
+        print()
+
+    def initVelovity(self):
+        print()
 
     #getter method for location
     def location(self):
@@ -39,11 +48,10 @@ class Particle:
     def updateLocation(self,nhBest):
         pbAc = self.pBestAcceleration()
         nbAc = self.nBestAcceleration(nhBest)
-        velocity = self.computeVelocity(pbAc,nbAc)
-        i = 0
-        for vi in velocity:
-            self.position[i] += vi
-            i += 1
+        self.updateVelocity(pbAc,nbAc)
+        for i in range(len(self.velocity)):
+            self.position[i] += self.velocity[i]
+        self.updatePersonalBest()
 
     #compute the acceleration due to personal best
     def pBestAcceleration(self):
@@ -71,12 +79,17 @@ class Particle:
             i += 1
         return nbAc
 
-    def computeVelocity(self,pbAc,nbAc):
+    #compute the velocity vector given personal best acceleration and
+    #neighborhood best acceleration
+    def updateVelocity(self,pbAc,nbAc):
         #constrict the new velocity and reset the current velocity
-        velocity = []
         for i in range(len(pbAc)):
-            v = pbAc[i] + nbAc[i]
+            self.velocity[i] += pbAc[i] + nbAc[i]
             #constrict
-            v = v * self.constrictionFactor
-            velocity += [v]
-        return velocity
+            self.velocity[i] = self.velocity[i] * self.constrictionFactor
+
+    def updatePersonalBest(self):
+        currentFuncVal = self.getFunctionValue()
+        pBestFuncVal = self.function(self.pBest)
+        if currentFuncVal > pBestFuncVal:
+            self.pBest = self.location

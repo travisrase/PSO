@@ -15,6 +15,7 @@ class PSO:
         self.particles = []
         self.NH = Nieghborhood()
 
+    #initialize a swarm of size self.sizeSwarm with randomly located particles
     def buildSwarm(self):
         #build sizeSwarm particles, by defualt they are initialized randomly
         for i in range(self.sizeSwarm):
@@ -23,11 +24,12 @@ class PSO:
         #check for global best
         self.updateGlobalBest()
 
+    #this method will individiually update partciles based on their personal
+    #best location and their neighborhood best location 
     def updateSwarm(self):
         for particle in self.particles:
             nhBest = self.NH.getBestNeighbor(self.particles,particle.location())
             particle.updateLocation(nhBest)
-
 
     #this method will look through all particles and find the global best
     def updateGlobalBest(self):
@@ -40,9 +42,6 @@ class PSO:
         self.buildSwarm()
         for i in range(self.numIterations):
             self.updateSwarm()
-
-
-
 
 
 #Get paramater input from command line (topology, sizeSwarm, numIterations, function, dimension)
