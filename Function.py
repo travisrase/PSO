@@ -3,7 +3,7 @@ import math
 class Function:
     def __init__(self, funcType, dimension):
         #the tpye of function we are optimizing
-        self.funcType = functType
+        self.funcType = funcType
 
     #given a position vector of length dimension,
     #this function will return a function value,
@@ -46,5 +46,5 @@ class Function:
             firstSum += xi * xi
             secondSum += math.cos(2.0*math.pi*xi)
         #Return value function
-        returnVal = -20.0 * math.exp(-0.2 * math.sqrt(firstSum / location.length())) - math.exp(secondSum / location.length()) + 20.0 + math.e
+        returnVal = -20.0 * math.exp(-0.2 * math.sqrt(firstSum / len(location)) - math.exp(secondSum / len(location))) + 20.0 + math.e
         return returnVal
