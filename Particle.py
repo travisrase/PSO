@@ -73,7 +73,7 @@ class Particle:
         nbAc = self.nBestAcceleration(nhBest)
         self.updateVelocity(pbAc,nbAc)
         for i in range(len(self.velocity)):
-            self.position[i] += self.velocity[i]
+            self.location[i] += self.velocity[i]
         self.updatePersonalBest()
 
     #compute the acceleration due to personal best
@@ -98,7 +98,7 @@ class Particle:
         for nbi in nhBest:
             iAc = nbi - self.location[i]
             iAc = iAc*self.phi2*random.random()
-            pbAc += [iAc]
+            nbAc += [iAc]
             i += 1
         return nbAc
 
@@ -114,5 +114,5 @@ class Particle:
     def updatePersonalBest(self):
         currentFuncVal = self.getFunctionValue()
         pBestFuncVal = self.function.eval(self.pBest)
-        if currentFuncVal > pBestFuncVal:
+        if currentFuncVal < pBestFuncVal:
             self.pBest = self.location
