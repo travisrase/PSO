@@ -1,7 +1,7 @@
 import sys
 from Particle import Particle
 from Function import Function
-from Nieghborhood import Nieghborhood
+from Neighborhood import Neighborhood
 
 class PSO:
     def __init__(self, topology, sizeSwarm, numIterations, function, dimension):
@@ -13,7 +13,7 @@ class PSO:
         self.globalBestLocation = []
         self.globalBestValue = 0
         self.particles = []
-        self.NH = Nieghborhood()
+        self.NH = Neighborhood()
 
     #initialize a swarm of size self.sizeSwarm with randomly located particles
     def buildSwarm(self):
@@ -25,7 +25,7 @@ class PSO:
         self.updateGlobalBest()
 
     #this method will individiually update partciles based on their personal
-    #best location and their neighborhood best location 
+    #best location and their neighborhood best location
     def updateSwarm(self):
         for particle in self.particles:
             nhBest = self.NH.getBestNeighbor(self.particles,particle.location())
