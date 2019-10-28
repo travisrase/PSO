@@ -12,7 +12,7 @@ class PSO:
         self.function = Function(funcType,int(dimension))
         self.dimension = int(dimension)
         self.globalBestLocation = []
-        self.globalBestValue = 0
+        self.globalBestValue = 10000000
         self.particles = []
         self.NH = Neighborhood(topology,int(dimension))
 
@@ -30,23 +30,36 @@ class PSO:
     #best location and their neighborhood best location
     def updateSwarm(self):
         for particle in self.particles:
-            nhBest = self.NH.getBestNeighbor(self.particles,particle.location())
+            nhBest = self.NH.getBestNeighbor(self.particles,particle.getLocation())
             particle.updateLocation(nhBest)
+
+    #check to see if terminantion condition is met (found 0.0 function value)
+    def minFound(self):
+        if self.globalBestValue == 0.0:
+            return True
+        else:
+            return False
+
+    def printOutput(self):
+        print("Min Value Found: ", self.globalBestValue)
+        print("Min Location: ", self.globalBestLocation)
 
     #this method will look through all particles and find the global best
     def updateGlobalBest(self):
         for particle in self.particles:
-            if particle.pBestValue() > self.globalBestValue:
+            if particle.pBestValue() < self.globalBestValue:
                 self.globalBestValue = particle.pBestValue()
-                self.globalBestLocation = particle.getLocation()
+                self.globalBestLocation = particle.pBest
 
     def run(self):
         self.buildSwarm()
-        print("numParticles: ", len(self.particles))
-        print("global best location : ", self.globalBestLocation)
-        print("global best value: ", self.globalBestValue)
         for i in range(self.numIterations):
             self.updateSwarm()
+            self.updateGlobalBest()
+            if self.minFound():
+                break
+        self.printOutput()
+
 
 
 #Get paramater input from command line (topology, sizeSwarm, numIterations, function, dimension)

@@ -23,7 +23,7 @@ class Neighborhood:
             return locationNeighborhood[0]
         else:
             return position
-
+          
     def glBestNeighbor(self, particles, curScore, position):
         glBest = curScore
         glBestLocation = []
@@ -34,7 +34,7 @@ class Neighborhood:
                 glBest = curVal
                 glBestLocation = curLocation
         return glBestLocation
-
+      
     def riBestNeighbor(self, particles, curScore, position):
         loBest = 0
         loBestLocation = []
@@ -71,3 +71,4 @@ class Neighborhood:
                 curPart = particles[neighbors[i]]
                 if
             return (loBestLocation, neighbors)
+
