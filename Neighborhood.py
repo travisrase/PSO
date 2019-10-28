@@ -8,30 +8,58 @@ class Neighborhood:
     #given all the particles in the swarm and the location
     #of a particle, it will return the location of the best
     #particle in its neighborhood.
-    def getBestNeighbor(self,particles,position):
+    def getBestNeighbor(self,particles, curScore, position):
+
         if self.NeighborhoodType == 'gl':
-            glBest = 0
-            glBestLocation = []
-            for i in range(len(particles)):
-                curVal = particles[i].getFunctionValue()
-                curLocation = particles[i].getLocation()
-                if curVal > glBest:
-                    glBest = curVal
-                    glBestLocation = curLocation
-            return glBestLocation
+            return self.glBestNeighbor(particles, curScore, position)
         elif self.NeighborhoodType == 'ri':
-            loBest = 0
-            loBestLocation = []
-
-
-            return loBestLocation
+            return self.riBestNeighbor(particles, curScore, position)
         elif self.NeighborhoodType == 'vn':
-            loBest = 0
-            loBestLocation = []
-
-            return loBestLocation
+            return self.vnBestNeighbor(particles, curScore, position)
         elif self.NeighborhoodType == 'ra':
-            ### NEED probabalistic neighborhood of previous type
+            ## figure out prevNeighbors syntax in the initial case
+            locationNeighborhood = self.raBestNeighbor(particles, curScore, position, prevNeighbors)
+            prevNeighbors = locationNeighborhood[1]
+            return locationNeighborhood[0]
+        else:
+            return position
+
+    def glBestNeighbor(self, particles, curScore, position):
+        glBest = curScore
+        glBestLocation = []
+        for i in range(len(particles)):
+            curVal = particles[i].getFunctionValue()
+            curLocation = particles[i].getLocation()
+            if curVal > glBest:
+                glBest = curVal
+                glBestLocation = curLocation
+        return glBestLocation
+
+    def riBestNeighbor(self, particles, curScore, position):
+        loBest = 0
+        loBestLocation = []
+        ### Maybe select two particles in the same dimension?
+
+        return loBestLocation
+
+    def vnBestNeighbor(self, particles, curScore, position):
+        loBest = curScore
+        loBestLocation = position
+        ### similar problem as above
+        return loBestLocation
+
+    def raBestNeighbor(self, particles, curScore, position, prevNeighbors):
+        if random.random() <= 0.2 && len(prevNeighbors) != 0:
+            loBest = curScore
+            loBestLocation = position
+            for i in range(len(prevNeighbors)):
+                curPart = particles[prevNeighbors[i]]
+                curLocation = curPart.getLocation()
+                if curVal > loBest:
+                    loBest = curVal
+                    loBestLocation = curLocation
+            return (loBestLocation, prevNeighbors)
+        else:
             neighborhoodSize = random.randInt(0, len(particles))
             loBest = 0
             loBestLocation = []
@@ -42,6 +70,4 @@ class Neighborhood:
             for i in range(len(neighbors)):
                 curPart = particles[neighbors[i]]
                 if
-            return loBestLocation
-
-        return [0]
+            return (loBestLocation, neighbors)
