@@ -2,35 +2,55 @@ import random
 
 class Particle:
     def __init__(self, dimension, function, funcType):
+        self.dimension = dimension
         #used to initialize starting velocity and position
         self.funcType = funcType
         #the location of the particle
         self.location = []
-        #initialize random location
-        for i in range (dimension):
-            self.location += [random.random()]
+        #particle velocity
+        self.velocity = []
         #personal best found, initialize as current position
         self.pBest = self.location
         #evaluation function
         self.function = function
-        #particle velocity
-        self.velocity = []
         #personal best acceleration coefficient
         self.phi1 = 2.05
         #global best acceleration coefficient
         self.phi2 = 2.05
         #constriction factor
-        self.phi = phi1 + phi2
         self.constrictionFactor = 0.7298
 
-    def initPosition(self):
-        print()
+    def __str__(self):
+        return self.location
 
-    def initVelovity(self):
-        print()
+    def randomInit(self):
+        self.initPosition()
+        self.initVelocity()
+
+    def initPosition(self):
+        rng = []
+        if self.funcType == "rok":
+            rng = (15.0, 30.0)
+        elif self.funcType == "ras":
+            rng = (16.0, 32.0)
+        else:
+            rng = (2.56, 5.12)
+        for i in range(self.dimension):
+            self.location += [random.uniform(*rng)]
+
+    def initVelocity(self):
+        rng = []
+        if self.funcType == "rok":
+            rng = (-2.0, 2.0)
+        elif self.funcType == "ras":
+            rng = (-2.0, 4.0)
+        else:
+            rng = (-2.0, 4.0)
+        for i in range(self.dimension):
+            self.velocity += [random.uniform(*rng)]
 
     #getter method for location
-    def location(self):
+    def getLocation(self):
         return self.location
 
     #setter method for location
@@ -39,11 +59,14 @@ class Particle:
 
     #getter method for personal best
     def pBest(self):
-        return self.personalBest
+        return self.pBest
+
+    def pBestValue(self):
+        return self.function.eval(self.pBest)
 
     #getter method for function value at current position
     def getFunctionValue(self):
-        return self.function(self.location)
+        return self.function.eval(self.location)
 
     def updateLocation(self,nhBest):
         pbAc = self.pBestAcceleration()
@@ -90,6 +113,6 @@ class Particle:
 
     def updatePersonalBest(self):
         currentFuncVal = self.getFunctionValue()
-        pBestFuncVal = self.function(self.pBest)
+        pBestFuncVal = self.function.eval(self.pBest)
         if currentFuncVal > pBestFuncVal:
             self.pBest = self.location

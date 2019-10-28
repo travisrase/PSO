@@ -2,7 +2,7 @@ import random
 
 class Neighborhood:
     def __init__(self, neighborhoodType, dimension):
-        self.neighborhoodType = NeighborhoodType
+        self.neighborhoodType = neighborhoodType
         self.dimension = dimension
 
     #given all the particles in the swarm and the location
@@ -14,19 +14,34 @@ class Neighborhood:
             glBestLocation = []
             for i in range(len(particles)):
                 curVal = particles[i].getFunctionValue()
-                curLocation = particles[i].location()
+                curLocation = particles[i].getLocation()
                 if curVal > glBest:
                     glBest = curVal
                     glBestLocation = curLocation
             return glBestLocation
         elif self.NeighborhoodType == 'ri':
-            asdf
+            loBest = 0
+            loBestLocation = []
+
+
+            return loBestLocation
         elif self.NeighborhoodType == 'vn':
-            asdf
+            loBest = 0
+            loBestLocation = []
+
+            return loBestLocation
         elif self.NeighborhoodType == 'ra':
+            ### NEED probabalistic neighborhood of previous type
             neighborhoodSize = random.randInt(0, len(particles))
             loBest = 0
             loBestLocation = []
-            for i in range(len(particles)):
+            neighborhood = set()
+            while len(neighborhood) < neighborhoodSize:
+                neighborhood.append(random.randInt(0, len(particles)))
+            neighbors = sorted(neighborhood)
+            for i in range(len(neighbors)):
+                curPart = particles[neighbors[i]]
+                if
+            return loBestLocation
 
         return [0]

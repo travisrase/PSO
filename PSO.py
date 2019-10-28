@@ -4,22 +4,24 @@ from Function import Function
 from Neighborhood import Neighborhood
 
 class PSO:
-    def __init__(self, topology, sizeSwarm, numIterations, function, dimension):
+    def __init__(self, topology, sizeSwarm, numIterations, funcType, dimension):
         self.topology = topology
-        self.sizeSwarm = sizeSwarm
-        self.numIterations = numIterations
-        self.function = Function(function,dimension)
-        self.dimension = dimension
+        self.sizeSwarm = int(sizeSwarm)
+        self.numIterations = int(numIterations)
+        self.funcType = funcType
+        self.function = Function(funcType,int(dimension))
+        self.dimension = int(dimension)
         self.globalBestLocation = []
         self.globalBestValue = 0
         self.particles = []
-        self.NH = Neighborhood()
+        self.NH = Neighborhood(topology,int(dimension))
 
     #initialize a swarm of size self.sizeSwarm with randomly located particles
     def buildSwarm(self):
         #build sizeSwarm particles, by defualt they are initialized randomly
         for i in range(self.sizeSwarm):
-            p = Particle(self.dimension,self.function)
+            p = Particle(self.dimension,self.function,self.funcType)
+            p.randomInit()
             self.particles += [p]
         #check for global best
         self.updateGlobalBest()
@@ -34,12 +36,15 @@ class PSO:
     #this method will look through all particles and find the global best
     def updateGlobalBest(self):
         for particle in self.particles:
-            if particle.pBest() > self.globalBestValue:
-                self.globalBestValue = particle.pBest()
-                self.globalBestLocation = particle.location()
+            if particle.pBestValue() > self.globalBestValue:
+                self.globalBestValue = particle.pBestValue()
+                self.globalBestLocation = particle.getLocation()
 
     def run(self):
         self.buildSwarm()
+        print("numParticles: ", len(self.particles))
+        print("global best location : ", self.globalBestLocation)
+        print("global best value: ", self.globalBestValue)
         for i in range(self.numIterations):
             self.updateSwarm()
 
