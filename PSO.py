@@ -2,6 +2,7 @@ import sys
 from Particle import Particle
 from Function import Function
 from Neighborhood import Neighborhood
+import statistics
 
 class PSO:
     def __init__(self, topology, sizeSwarm, numIterations, funcType, dimension):
@@ -42,11 +43,10 @@ class PSO:
             return False
 
     #this funciton will format the output of the program,
-    #printing the minimum value found and the location of the
+    #returning the minimum value found and the location of the
     #minimum value
-    def printOutput(self):
-        print("Min Value Found: ", self.globalBestValue)
-        print("Min Location: ", self.globalBestLocation)
+    def formatOutput(self, numIterations):
+        return {"val" :  self.globalBestValue, "location" : self.globalBestLocation, "iterations" : numIterations}
 
     #this method will look through all particles and find the global best
     def updateGlobalBest(self):
@@ -64,11 +64,9 @@ class PSO:
         for i in range(self.numIterations):
             self.updateSwarm()
             self.updateGlobalBest()
-            print("i: ", i)
-            print("bestFound: ", self.globalBestValue)
             if self.minFound():
                 break
-        self.printOutput()
+        return self.formatOutput(i)
 
 #Get paramater input from command line (topology, sizeSwarm, numIterations, function, dimension)
 topology = sys.argv[1]
@@ -78,5 +76,25 @@ function = sys.argv[4]
 dimension = sys.argv[5]
 
 #run the program
-eA = PSO(topology,sizeSwarm,numIterations,function,dimension)
-eA.run()
+nunRuns = 20
+mins = []
+locations = []
+iterations = []
+for i in range(nunRuns):
+    eA = PSO(topology,sizeSwarm,numIterations,function,dimension)
+    res = eA.run()
+    min = res["val"]
+    location = res["location"]
+    iteration = res["iterations"]
+    mins += [min]
+    locations += [location]
+    iterations += [iteration]
+print("topology: ", topology)
+print("sizeSwarm: ", sizeSwarm)
+print("function: ", function)
+print("dimension: ", dimension)
+print("median min: ", statistics.median(mins))
+print("mean min: ", statistics.mean(mins))
+print("mins: ", mins)
+print("average iterations: ", statistics.mean(iterations))
+print("iterations: ", iterations)
