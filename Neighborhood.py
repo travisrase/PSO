@@ -57,7 +57,7 @@ class Neighborhood:
             if sum(numpy.subtract(position, particle.getLocation())) < self.dimension:
                 neighbors += [particle]
         for neighbor in neighbors:
-            if neighbor.getFunctionValue() > curScore:
+            if neighbor.getFunctionValue() < loBest:
                 loBest = neighbor.getFunctionValue()
                 loBestLocation = neighbor.getLocation()
         return loBestLocation
@@ -70,7 +70,7 @@ class Neighborhood:
                 curPart = particles[prevNeighbors[i]]
                 curLocation = curPart.getLocation()
                 curVal = curPart.getFunctionValue()
-                if curVal > loBest:
+                if curVal < loBest:
                     loBest = curVal
                     loBestLocation = curLocation
             return (loBestLocation, prevNeighbors)
@@ -85,7 +85,7 @@ class Neighborhood:
             neighbors = sorted(neighborhood)
             for i in range(len(neighbors)):
                 curPart = particles[neighbors[i]]
-                if curPart.getFunctionValue() > curScore:
+                if curPart.getFunctionValue() < loBest:
                     loBest = curPart.getFunctionValue()
                     loBestLocation = curPart.getLocation()
             return (loBestLocation, neighbors)
