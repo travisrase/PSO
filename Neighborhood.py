@@ -91,10 +91,8 @@ class Neighborhood:
         loBestLocation = position
         shape = self.vnBestNeighborHelper(particles)
         topology = shape[0]
-        #print("shape: ", topology)
         width = curIndex % shape[1]
         height = curIndex // shape[2]
-        #curPosition = (curIndex % width, curIndex // width)
         #Add left & above neighbors to neighbors list
         neighbors = []
         neighbors.append(topology[width - 1][height])
