@@ -66,7 +66,7 @@ class Neighborhood:
         if random.random() <= 0.2 and  prevNeighbors != None:
             loBest = curScore
             loBestLocation = position
-            for i in range(len(prevNeighbors)):
+            for i in range(len(prevNeighbors) - 1):
                 curPart = particles[prevNeighbors[i]]
                 curLocation = curPart.getLocation()
                 curVal = curPart.getFunctionValue()
@@ -83,7 +83,7 @@ class Neighborhood:
                 neighborhood.append(random.randint(0, len(particles)))
             neighborhood = set(neighborhood)
             neighbors = sorted(neighborhood)
-            for i in range(len(neighbors)):
+            for i in range(len(neighbors) - 1):
                 curPart = particles[neighbors[i]]
                 if curPart.getFunctionValue() < loBest:
                     loBest = curPart.getFunctionValue()
