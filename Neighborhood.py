@@ -3,7 +3,7 @@ import numpy
 
 class Neighborhood:
     def __init__(self, neighborhoodType, dimension):
-        self.neighborhoodType = neighborhoodType
+        self.neighborhoodType= neighborhoodType
         self.dimension = dimension
 
 
@@ -12,13 +12,13 @@ class Neighborhood:
     #particle in its neighborhood.
     def getBestNeighbor(self, particles, curScore, position, curIndex):
 
-        if self.NeighborhoodType == 'gl':
+        if self.neighborhoodType== 'gl':
             return self.glBestNeighbor(particles, curScore, position)
-        elif self.NeighborhoodType == 'ri':
+        elif self.neighborhoodType== 'ri':
             return self.riBestNeighbor(particles, curScore, position, curIndex)
-        elif self.NeighborhoodType == 'vn':
+        elif self.neighborhoodType== 'vn':
             return self.vnBestNeighbor(particles, curScore, position)
-        elif self.NeighborhoodType == 'ra':
+        elif self.neighborhoodType== 'ra':
             prevNeighbors = None
             locationNeighborhood = self.raBestNeighbor(particles, curScore, position, prevNeighbors)
             prevNeighbors = locationNeighborhood[1]
@@ -28,7 +28,7 @@ class Neighborhood:
 
     def glBestNeighbor(self, particles, curScore, position):
         glBest = curScore
-        glBestLocation = []
+        glBestLocation = position
         for i in range(len(particles)):
             curVal = particles[i].getFunctionValue()
             curLocation = particles[i].getLocation()
@@ -58,7 +58,7 @@ class Neighborhood:
         loBestLocation = position
         neighbors = []
         for particle in particles:
-            if numpy.subtract(position, particle.getLocation()) < self.dimension):
+            if numpy.subtract(position, particle.getLocation()) < self.dimension:
                 neighbors += particle
         for neighbor in neighbors:
             if neighbor.getFunctionValue() > curScore:
