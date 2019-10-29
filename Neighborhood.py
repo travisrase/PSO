@@ -5,7 +5,7 @@ class Neighborhood:
     def __init__(self, neighborhoodType, dimension):
         self.neighborhoodType= neighborhoodType
         self.dimension = dimension
-        self.previousVNneigh = None
+        self.previousRAneigh = None
 
     #given all the particles in the swarm and the location
     #of a particle, it will return the location of the best
@@ -16,10 +16,10 @@ class Neighborhood:
         elif self.neighborhoodType== 'ri':
             return self.riBestNeighbor(particles, curScore, position, curIndex)
         elif self.neighborhoodType== 'vn':
-            return self.vnBestNeighbor(particles, curScore, position)
+            return self.vnBestNeighbor(particles, curScore, position, curIndex)
         elif self.neighborhoodType== 'ra':
-            locationNeighborhood = self.raBestNeighbor(particles, curScore, position, self.previousVNneigh)
-            self.previousVNneigh = locationNeighborhood[1]
+            locationNeighborhood = self.raBestNeighbor(particles, curScore, position, self.previousRAneigh)
+            self.previousRAneigh = locationNeighborhood[1]
             return locationNeighborhood[0]
         else:
             return position
@@ -62,13 +62,53 @@ class Neighborhood:
     #Uses the list of particles, the evaluation of the current particle, the
     #current particles position to
     #find the best location found so far in the swarm.
-    def vnBestNeighbor(self, particles, curScore, position):
+    def vnBestNeighborHelper(self, particles):
+        numPart = len(particles)
+        width = 0
+        height = 0
+        if numPart == 16:
+            width = 4
+            height = 4
+        elif numPart == 30:
+            width = 5
+            height = 6
+        else:
+            width = 7
+            height = 7
+        topology = [[0] * width] * height
+        i = 0
+        while i < len(particles):
+            rollover = 0
+            while rollover < width:
+                horizontal = i % width
+                topology[horizontal][rollover] = particles[i]
+                rollover = rollover + 1
+                i = i + 1
+        return (topology, width, height)
+
+    def vnBestNeighbor(self, particles, curScore, position, curIndex):
         loBest = curScore
         loBestLocation = position
+        shape = self.vnBestNeighborHelper(particles)
+        topology = shape[0]
+        #print("shape: ", topology)
+        width = curIndex % shape[1]
+        height = curIndex // shape[2]
+        #curPosition = (curIndex % width, curIndex // width)
+        #Add left & above neighbors to neighbors list
         neighbors = []
-        for particle in particles:
-            if sum(numpy.subtract(position, particle.getLocation())) < self.dimension:
-                neighbors += [particle]
+        neighbors.append(topology[width - 1][height])
+        neighbors.append(topology[width][height - 1])
+        #get neighbor to the right
+        if width + 1 <= (shape[1] - 2):
+            neighbors.append(topology[width + 1][height])
+        else:
+            neighbors.append(topology[0][height])
+        #get neigbor below
+        if height + 1 <= shape[2] - 2:
+            neighbors.append(topology[width][height + 1])
+        else:
+            neighbors.append(topology[width][0])
         for neighbor in neighbors:
             if neighbor.getFunctionValue() < loBest:
                 loBest = neighbor.getFunctionValue()
