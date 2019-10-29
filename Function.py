@@ -36,7 +36,6 @@ class Function:
             returnVal = xi*xi - 10.0 * math.cos(2 * math.pi * xi) + 10.0
         return returnVal
 
-
     def evalAckley(self,location):
         firstSum = 0.0
         secondSum = 0.0
@@ -45,18 +44,4 @@ class Function:
             secondSum += math.cos(2.0*math.pi*elem)
         lengths = float(len(location))
         returnVal = -20.0*math.exp(-0.2*math.sqrt(firstSum/lengths)) - math.exp(secondSum/lengths) + 20 + math.e
-        print(returnVal)
         return (-20.0*math.exp(-0.2*math.sqrt(firstSum/lengths)) - math.exp(secondSum/lengths) + 20 + math.e)
-
-    # def evalAckley(self,location):
-    #     #Init sums
-    #     firstSum = 0
-    #     secondSum = 0
-    #     for i in range(len(location)):
-    #         xi = location[i]
-    #         #Compute first and second sums
-    #         firstSum += xi * xi
-    #         secondSum += math.cos(2.0*math.pi*xi)
-    #     #Return value function
-    #     returnVal = -20.0 * math.exp(-0.2 * math.sqrt(firstSum / len(location)) - math.exp(secondSum / len(location))) + 20.0 + math.e
-    #     return returnVal

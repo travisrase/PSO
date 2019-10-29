@@ -7,12 +7,13 @@ class Neighborhood:
         self.dimension = dimension
         self.previousVNneigh = None
 
-    #given all the particles in the swarm and the location
-    #of a particle, it will return the location of the best
+    #given all the particles in the swarm, the evaluation of the current
+    #particle, the location of the current particle, and the index of the
+    #current particle, it will return the location of the best
     #particle in its neighborhood.
     def getBestNeighbor(self, particles, curScore, position, curIndex):
         if self.neighborhoodType== 'gl':
-            return self.glBestNeighbor(particles, position)
+            return self.glBestNeighbor(particles, curScore, position)
         elif self.neighborhoodType== 'ri':
             return self.riBestNeighbor(particles, curScore, position, curIndex)
         elif self.neighborhoodType== 'vn':
@@ -24,8 +25,9 @@ class Neighborhood:
         else:
             return position
 
-    def glBestNeighbor(self, particles,position):
-        glBest = 100000000
+    #Helper method used for global neighborhood topology
+    def glBestNeighbor(self, particles,curScore, position):
+        glBest = curScore
         glBestLocation = position
         for particle in particles:
             if particle.getFunctionValue() < glBest:
@@ -33,6 +35,7 @@ class Neighborhood:
                 glBestLocation = particle.getLocation()
         return glBestLocation
 
+    #Helper method used for ring neighborhood topology
     def riBestNeighbor(self, particles, curScore, position, curIndex):
         loBest = curScore
         loBestLocation = position
@@ -49,6 +52,7 @@ class Neighborhood:
                 loBestLocation = neighbor.getLocation()
         return loBestLocation
 
+    #Helper method used for von Neumann neighborhood topology
     def vnBestNeighbor(self, particles, curScore, position):
         loBest = curScore
         loBestLocation = position
@@ -62,6 +66,7 @@ class Neighborhood:
                 loBestLocation = neighbor.getLocation()
         return loBestLocation
 
+    #Helper method used for random neighborhood topology
     def raBestNeighbor(self, particles, curScore, position, prevNeighbors):
         if random.random() <= 0.2 and  prevNeighbors != None:
             loBest = curScore
