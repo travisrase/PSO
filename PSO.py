@@ -45,8 +45,8 @@ class PSO:
     #this funciton will format the output of the program,
     #returning the minimum value found and the location of the
     #minimum value
-    def formatOutput(self, numIterations):
-        return {"val" :  self.globalBestValue, "location" : self.globalBestLocation, "iterations" : numIterations}
+    def formatOutput(self, numIterations, values):
+        return {"val" :  self.globalBestValue, "location" : self.globalBestLocation, "iterations" : numIterations, "intervalValues": values}
 
     #this method will look through all particles and find the global best
     def updateGlobalBest(self):
@@ -61,12 +61,15 @@ class PSO:
     #the location
     def run(self):
         self.buildSwarm()
+        vals = []
         for i in range(self.numIterations):
             self.updateSwarm()
             self.updateGlobalBest()
             if self.minFound():
                 break
-        return self.formatOutput(i)
+            if i % 1000 == 0:
+                vals += [self.globalBestValue]
+        return self.formatOutput(i,vals)
 
 #Get paramater input from command line (topology, sizeSwarm, numIterations, function, dimension)
 topology = sys.argv[1]
@@ -75,26 +78,40 @@ numIterations = sys.argv[3]
 function = sys.argv[4]
 dimension = sys.argv[5]
 
+#computes the median function value of each function for all 20 runs at each interval
+def computeMedianFunctionVal(vals):
+    valsOfI = []
+    for row in range(len(vals)):
+        for interval in range(len(vals[row])):
+            if interval > (len(valsOfI) -1):
+                valsOfI += [[vals[row][interval]]]
+            else:
+                valsOfI[interval] += [vals[row][interval]]
+    medianValsOfI = [statistics.median(i) for i in valsOfI]
+    return medianValsOfI
+
 #run the program
 nunRuns = 20
 mins = []
 locations = []
 iterations = []
+intervalValues = []
 for i in range(nunRuns):
     eA = PSO(topology,sizeSwarm,numIterations,function,dimension)
     res = eA.run()
     min = res["val"]
     location = res["location"]
     iteration = res["iterations"]
+    iValues = res["intervalValues"]
     mins += [min]
     locations += [location]
     iterations += [iteration]
+    intervalValues += [iValues]
 print("topology: ", topology)
 print("sizeSwarm: ", sizeSwarm)
 print("function: ", function)
 print("dimension: ", dimension)
 print("median min: ", statistics.median(mins))
 print("mean min: ", statistics.mean(mins))
-print("mins: ", mins)
 print("average iterations: ", statistics.mean(iterations))
-print("iterations: ", iterations)
+print("median value for each 1000 iteration: ", computeMedianFunctionVal(intervalValues))
