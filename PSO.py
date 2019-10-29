@@ -30,7 +30,8 @@ class PSO:
     #best location and their neighborhood best location
     def updateSwarm(self):
         for particle in self.particles:
-            nhBest = self.NH.getBestNeighbor(self.particles,particle.getLocation())
+            curIndex = self.particles.index(particle)
+            nhBest = self.NH.getBestNeighbor(self.particles,particle.getFunctionValue(),particle.getLocation(),curIndex)
             particle.updateLocation(nhBest)
 
     #check to see if terminantion condition is met (found 0.0 function value)
