@@ -5,6 +5,7 @@ class Neighborhood:
         self.neighborhoodType = neighborhoodType
         self.dimension = dimension
 
+
     #given all the particles in the swarm and the location
     #of a particle, it will return the location of the best
     #particle in its neighborhood.
@@ -18,12 +19,13 @@ class Neighborhood:
             return self.vnBestNeighbor(particles, curScore, position)
         elif self.NeighborhoodType == 'ra':
             ## figure out prevNeighbors syntax in the initial case
+            prevNeighbors = None
             locationNeighborhood = self.raBestNeighbor(particles, curScore, position, prevNeighbors)
             prevNeighbors = locationNeighborhood[1]
             return locationNeighborhood[0]
         else:
             return position
-          
+
     def glBestNeighbor(self, particles, curScore, position):
         glBest = curScore
         glBestLocation = []
@@ -34,7 +36,7 @@ class Neighborhood:
                 glBest = curVal
                 glBestLocation = curLocation
         return glBestLocation
-      
+
     def riBestNeighbor(self, particles, curScore, position):
         loBest = 0
         loBestLocation = []
@@ -49,7 +51,7 @@ class Neighborhood:
         return loBestLocation
 
     def raBestNeighbor(self, particles, curScore, position, prevNeighbors):
-        if random.random() <= 0.2 && len(prevNeighbors) != 0:
+        if random.random() <= 0.2 and  prevNeighbors != None:
             loBest = curScore
             loBestLocation = position
             for i in range(len(prevNeighbors)):
@@ -71,4 +73,3 @@ class Neighborhood:
                 curPart = particles[neighbors[i]]
                 if
             return (loBestLocation, neighbors)
-

@@ -60,8 +60,6 @@ class PSO:
                 break
         self.printOutput()
 
-
-
 #Get paramater input from command line (topology, sizeSwarm, numIterations, function, dimension)
 topology = sys.argv[1]
 sizeSwarm = sys.argv[2]
