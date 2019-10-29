@@ -44,7 +44,7 @@ class Neighborhood:
             neighbors.append(particles[curIndex - 1])
             neighbors.append(particles[curIndex + 1])
         for neighbor in neighbors:
-            if neighbor.getFunctionValue() > curScore:
+            if neighbor.getFunctionValue() < loBest:
                 loBest = neighbor.getFunctionValue()
                 loBestLocation = neighbor.getLocation()
         return loBestLocation
