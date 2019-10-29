@@ -9,12 +9,15 @@ class Function:
     #this function will return a function value,
     #from a function of type funcType at position
     def eval(self,location):
-        if self.funcType == "roc":
-            return self.evalRosenbrock(location)
-        elif self.funcType == "ras":
-            return self.evalRastrigin(location)
-        else:
-            return self.evalAckley(location)
+        try:
+            if self.funcType == "roc":
+                return self.evalRosenbrock(location)
+            elif self.funcType == "ras":
+                return self.evalRastrigin(location)
+            else:
+                return self.evalAckley(location)
+        except:
+            return 100000000
 
     def evalRosenbrock(self,location):
         #Init return Val
