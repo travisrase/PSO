@@ -40,20 +40,13 @@ class Neighborhood:
         if curIndex == (len(particles) - 1):
             neighbors.append(particles[curIndex - 1])
             neighbors.append(particles[0])
-        elif curIndex == (len(particles) - 2):
-            neighbors.append(particles[curIndex - 1])
-            neighbors.append(particles[curIndex + 1])
-        else:
-            print("curIndex: ", curIndex)
-            print("length: ", len(particles))
+        elif curIndex <= (len(particles) - 2):
             neighbors.append(particles[curIndex - 1])
             neighbors.append(particles[curIndex + 1])
         for neighbor in neighbors:
             if neighbor.getFunctionValue() > curScore:
                 loBest = neighbor.getFunctionValue()
                 loBestLocation = neighbor.getLocation()
-        ### Maybe select two particles in the same dimension?
-
         return loBestLocation
 
     def vnBestNeighbor(self, particles, curScore, position):
