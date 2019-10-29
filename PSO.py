@@ -41,6 +41,9 @@ class PSO:
         else:
             return False
 
+    #this funciton will format the output of the program,
+    #printing the minimum value found and the location of the
+    #minimum value
     def printOutput(self):
         print("Min Value Found: ", self.globalBestValue)
         print("Min Location: ", self.globalBestLocation)
@@ -52,6 +55,10 @@ class PSO:
                 self.globalBestValue = particle.pBestValue()
                 self.globalBestLocation = particle.pBest
 
+    #this function will run numIterations of the PSO algorithm and print
+    #the minimum value found and the minimum location after the iterations.
+    #Also if a 0.0 value is found it will break out of the loop and return
+    #the location
     def run(self):
         self.buildSwarm()
         for i in range(self.numIterations):

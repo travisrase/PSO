@@ -44,8 +44,6 @@ class Neighborhood:
             neighbors.append(particles[curIndex - 1])
             neighbors.append(particles[curIndex + 1])
         else:
-            print("curIndex: ", curIndex)
-            print("length: ", len(particles))
             neighbors.append(particles[curIndex - 1])
             neighbors.append(particles[curIndex + 1])
         for neighbor in neighbors:
