@@ -5,13 +5,13 @@ class Neighborhood:
     def __init__(self, neighborhoodType, dimension):
         self.neighborhoodType= neighborhoodType
         self.dimension = dimension
+        self.previousVNneigh = None
 
 
     #given all the particles in the swarm and the location
     #of a particle, it will return the location of the best
     #particle in its neighborhood.
     def getBestNeighbor(self, particles, curScore, position, curIndex):
-
         if self.neighborhoodType== 'gl':
             return self.glBestNeighbor(particles, curScore, position)
         elif self.neighborhoodType== 'ri':
@@ -19,9 +19,8 @@ class Neighborhood:
         elif self.neighborhoodType== 'vn':
             return self.vnBestNeighbor(particles, curScore, position)
         elif self.neighborhoodType== 'ra':
-            prevNeighbors = None
-            locationNeighborhood = self.raBestNeighbor(particles, curScore, position, prevNeighbors)
-            prevNeighbors = locationNeighborhood[1]
+            locationNeighborhood = self.raBestNeighbor(particles, curScore, position, self.previousVNneigh)
+            self.previousVNneigh = locationNeighborhood[1]
             return locationNeighborhood[0]
         else:
             return position
@@ -42,9 +41,11 @@ class Neighborhood:
         loBestLocation = position
         neighbors = []
         if curIndex < (len(particles) - 2):
-            neighbors.append(particles[curIndex - 1], particles[0])
+            neighbors.append(particles[curIndex - 1])
+            neighbors.append(particles[0])
         else:
-            neighbors.append(particles[curIndex - 1], particles[curIndex + 1])
+            neighbors.append(particles[curIndex - 1])
+            neighbors.append(particles[curIndex + 1])
         for neighbor in neighbors:
             if neighbor.getFunctionValue() > curScore:
                 loBest = neighbor.getFunctionValue()
@@ -58,8 +59,8 @@ class Neighborhood:
         loBestLocation = position
         neighbors = []
         for particle in particles:
-            if numpy.subtract(position, particle.getLocation()) < self.dimension:
-                neighbors += particle
+            if sum(numpy.subtract(position, particle.getLocation())) < self.dimension:
+                neighbors += [particle]
         for neighbor in neighbors:
             if neighbor.getFunctionValue() > curScore:
                 loBest = neighbor.getFunctionValue()

@@ -57,6 +57,8 @@ class PSO:
         for i in range(self.numIterations):
             self.updateSwarm()
             self.updateGlobalBest()
+            print("i: ", i)
+            print("bestFound: ", self.globalBestValue)
             if self.minFound():
                 break
         self.printOutput()
