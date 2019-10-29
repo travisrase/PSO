@@ -7,13 +7,12 @@ class Neighborhood:
         self.dimension = dimension
         self.previousVNneigh = None
 
-
     #given all the particles in the swarm and the location
     #of a particle, it will return the location of the best
     #particle in its neighborhood.
     def getBestNeighbor(self, particles, curScore, position, curIndex):
         if self.neighborhoodType== 'gl':
-            return self.glBestNeighbor(particles, curScore, position)
+            return self.glBestNeighbor(particles, position)
         elif self.neighborhoodType== 'ri':
             return self.riBestNeighbor(particles, curScore, position, curIndex)
         elif self.neighborhoodType== 'vn':
@@ -25,15 +24,13 @@ class Neighborhood:
         else:
             return position
 
-    def glBestNeighbor(self, particles, curScore, position):
-        glBest = curScore
+    def glBestNeighbor(self, particles,position):
+        glBest = 100000000
         glBestLocation = position
-        for i in range(len(particles)):
-            curVal = particles[i].getFunctionValue()
-            curLocation = particles[i].getLocation()
-            if curVal > glBest:
-                glBest = curVal
-                glBestLocation = curLocation
+        for particle in particles:
+            if particle.getFunctionValue() < glBest:
+                glBest = particle.getFunctionValue()
+                glBestLocation = particle.getLocation()
         return glBestLocation
 
     def riBestNeighbor(self, particles, curScore, position, curIndex):
@@ -74,17 +71,19 @@ class Neighborhood:
             for i in range(len(prevNeighbors)):
                 curPart = particles[prevNeighbors[i]]
                 curLocation = curPart.getLocation()
+                curVal = curPart.getFunctionValue()
                 if curVal > loBest:
                     loBest = curVal
                     loBestLocation = curLocation
             return (loBestLocation, prevNeighbors)
         else:
-            neighborhoodSize = random.randInt(0, len(particles))
+            neighborhoodSize = random.randint(0, len(particles))
             loBest = curScore
             loBestLocation = position
-            neighborhood = set()
+            neighborhood = []
             while len(neighborhood) < neighborhoodSize:
-                neighborhood.append(random.randInt(0, len(particles)))
+                neighborhood.append(random.randint(0, len(particles)))
+            neighborhood = set(neighborhood)
             neighbors = sorted(neighborhood)
             for i in range(len(neighbors)):
                 curPart = particles[neighbors[i]]
