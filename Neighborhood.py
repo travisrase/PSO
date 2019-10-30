@@ -6,6 +6,7 @@ class Neighborhood:
         self.neighborhoodType= neighborhoodType
         self.dimension = dimension
         self.previousRAneigh = None
+        self.previousVNneigh = None
 
     #given all the particles in the swarm and the location
     #of a particle, it will return the location of the best
@@ -16,7 +17,9 @@ class Neighborhood:
         elif self.neighborhoodType== 'ri':
             return self.riBestNeighbor(particles, curScore, position, curIndex)
         elif self.neighborhoodType== 'vn':
-            return self.vnBestNeighbor(particles, curScore, position, curIndex)
+            locationNeighborhood = self.vnBestNeighbor(particles, curScore, position, curIndex, self.previousVNneigh)
+            self.previousVNneigh = locationNeighborhood[1]
+            return locationNeighborhood[0]
         elif self.neighborhoodType== 'ra':
             locationNeighborhood = self.raBestNeighbor(particles, curScore, position, self.previousRAneigh)
             self.previousRAneigh = locationNeighborhood[1]
@@ -86,10 +89,13 @@ class Neighborhood:
                 i = i + 1
         return (topology, width, height)
 
-    def vnBestNeighbor(self, particles, curScore, position, curIndex):
+    def vnBestNeighbor(self, particles, curScore, position, curIndex, prevNeighbors):
+        shape = prevNeighbors
+        if shape == None:
+            shape = self.vnBestNeighborHelper(particles)
         loBest = curScore
         loBestLocation = position
-        shape = self.vnBestNeighborHelper(particles)
+        #shape = self.vnBestNeighborHelper(particles)
         topology = shape[0]
         width = curIndex % shape[1]
         height = curIndex // shape[2]
@@ -111,7 +117,7 @@ class Neighborhood:
             if neighbor.getFunctionValue() < loBest:
                 loBest = neighbor.getFunctionValue()
                 loBestLocation = neighbor.getLocation()
-        return loBestLocation
+        return (loBestLocation, shape)
 
 
     #Helper method used to find the best neighbor in random swarm topology
