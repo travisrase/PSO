@@ -78,6 +78,15 @@ numIterations = sys.argv[3]
 function = sys.argv[4]
 dimension = sys.argv[5]
 
+eA = PSO(topology,sizeSwarm,numIterations,function,dimension)
+res = eA.run()
+print("Minimum Value Found: ", res["val"])
+print("Minimum Value Location: ", res["location"])
+print("Number of Iterations: ", int(res["iterations"]) + 1)
+
+
+#Used to run the program for multiple iterations
+"""
 #computes the median function value of each function for all 20 runs at each interval
 def computeMedianFunctionVal(vals):
     valsOfI = []
@@ -90,7 +99,7 @@ def computeMedianFunctionVal(vals):
     medianValsOfI = [statistics.median(i) for i in valsOfI]
     return medianValsOfI
 
-#run the program
+
 nunRuns = 20
 mins = []
 locations = []
@@ -115,3 +124,4 @@ print("median min: ", statistics.median(mins))
 print("mean min: ", statistics.mean(mins))
 print("average iterations: ", statistics.mean(iterations))
 print("median value for each 1000 iteration: ", computeMedianFunctionVal(intervalValues))
+"""
