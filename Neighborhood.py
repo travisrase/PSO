@@ -24,10 +24,21 @@ class Neighborhood:
         else:
             return position
 
+    #Helper method that returns the best neighbor when given a neighborhood.
+    def getBestNeighbor(self, neighborhood, curScore, position):
+        loBest = curScore
+        loBestLocation = position
+        for neighbor in neighbors:
+            neighborVal = neighbor.getFunctionValue()
+            if neighborVal < loBest:
+                loBest = neighborVal
+                loBestLocation = neighbor.getLocation()
+        return loBestLocation
+
     #Helper method used to find the best neighbor in global swarm topology
     #Uses the list of particles and the current particles position to determine
     #the best location found so far in the swarm.
-    def glBestNeighbor(self, particles,position):
+    def glBestNeighbor(self, particles,position,):
         glBest = 100000000
         glBestLocation = position
         for particle in particles:
@@ -81,7 +92,7 @@ class Neighborhood:
     #current particle's position, and the list of its previous neighbors to
     #find the best location found so far in the swarm.
     def raBestNeighbor(self, particles, curScore, position, prevNeighbors):
-        if random.random() <= 0.2 and  prevNeighbors != None:
+        if random.random() <= 0.8 and  prevNeighbors != None:
             loBest = curScore
             loBestLocation = position
             for i in range(len(prevNeighbors) - 1):
