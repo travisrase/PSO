@@ -1,72 +1,75 @@
 import random
-import numpy
+import numpy as np
 
 class Neighborhood:
     def __init__(self, neighborhoodType, dimension):
-        self.neighborhoodType= neighborhoodType
+        self.neighborhoodType = neighborhoodType
         self.dimension = dimension
-        self.previousRAneigh = None
-        self.previousVNneigh = None
+        self.neighbors = []
 
-    #given all the particles in the swarm and the location
-    #of a particle, it will return the location of the best
-    #particle in its neighborhood.
+
+    """This helper method initializes a neighborhood for a given problem type."""
+    def initNeighbors(self, particles, curIndex):
+        if self.neighborhoodType == 'gl':
+            self.neighbors = particles
+        elif self.neighborhoodType == 'ri':
+            self.riNeighbors(particles, curIndex)
+        elif self.neighborhoodType == 'vn':
+            self.vnNeighbors(particles, curIndex)
+        elif self.neighborhoodType == 'ra':
+            self.raNeighbors(particles, curIndex)
+
+
+    """Given all the particles in the swarm and the location
+    of a particle, it will return the location of the best
+    particle in its neighborhood."""
     def getBestNeighbor(self, particles, curScore, position, curIndex):
+        if len(self.neighbors) == 0:
+            self.initNeighbors(particles, curIndex)
         if self.neighborhoodType== 'gl':
-            return self.glBestNeighbor(particles, position)
+            return self.getBestLocation(self.neighbors, curScore, position)
         elif self.neighborhoodType== 'ri':
-            return self.riBestNeighbor(particles, curScore, position, curIndex)
+            return self.getBestLocation(self.neighbors, curScore, position)
         elif self.neighborhoodType== 'vn':
-            locationNeighborhood = self.vnBestNeighbor(particles, curScore, position, curIndex, self.previousVNneigh)
-            self.previousVNneigh = locationNeighborhood[1]
-            return locationNeighborhood[0]
+            return self.getBestLocation(self.neighbors, curScore, position)
         elif self.neighborhoodType== 'ra':
-            locationNeighborhood = self.raBestNeighbor(particles, curScore, position, self.previousRAneigh)
-            self.previousRAneigh = locationNeighborhood[1]
-            return locationNeighborhood[0]
+            self.raNeighbors(particles, curIndex)
+            return self.getBestLocation(self.neighbors, curScore, position)
         else:
             return position
 
-    #Helper method used to find the best neighbor in global swarm topology
-    #Uses the list of particles and the current particles position to determine
-    #the best location found so far in the swarm.
-    def glBestNeighbor(self, particles,position):
-        glBest = 100000000
-        glBestLocation = position
-        for particle in particles:
-            if particle.getFunctionValue() < glBest:
-                glBest = particle.getFunctionValue()
-                glBestLocation = particle.getLocation()
-        return glBestLocation
-
-
-    #Helper method used to find the best neighbor in ring swarm topology
-    #Uses the list of particles, the evaluation of the current particle, the
-    #current particles position, and the current particle's index to
-    #find the best location found so far in the swarm.
-    def riBestNeighbor(self, particles, curScore, position, curIndex):
+    """Helper method that returns the best neighbor when given a neighborhood,
+    the evaluation of the current particle's location, and the current particle's
+    position."""
+    def getBestLocation(self, neighborhood, curScore, position):
         loBest = curScore
         loBestLocation = position
-        neighbors = []
-        if curIndex == (len(particles) - 1):
-            neighbors.append(particles[curIndex - 1])
-            neighbors.append(particles[0])
-        elif curIndex <= (len(particles) - 2):
-            neighbors.append(particles[curIndex - 1])
-            neighbors.append(particles[curIndex + 1])
-        for neighbor in neighbors:
-            if neighbor.getFunctionValue() < loBest:
-                loBest = neighbor.getFunctionValue()
+        #print("neighbors: ", self.neighbors)
+        for neighbor in self.neighbors:
+            neighborVal = neighbor.getFunctionValue()
+            if neighborVal < loBest:
+                loBest = neighborVal
                 loBestLocation = neighbor.getLocation()
         return loBestLocation
 
 
-    #Helper method used to find the best neighbor in von Neumann swarm topology
-    #Uses the list of particles, the evaluation of the current particle, the
-    #current particles position to
-    #find the best location found so far in the swarm.
-    def vnBestNeighborHelper(self, particles):
-        numPart = len(particles)
+
+    """Helper method used to create the ring swarm neighborhood topology.
+    Uses the list of particles, the evaluation of the current particle, the
+    current particles position, and the current particle's index to
+    create the neighborhood."""
+    def riNeighbors(self, particles, curIndex):
+        if curIndex == (len(particles) - 1):
+            self.neighbors.append(particles[curIndex - 1])
+            self.neighbors.append(particles[0])
+        elif curIndex <= (len(particles) - 2):
+            self.neighbors.append(particles[curIndex - 1])
+            self.neighbors.append(particles[curIndex + 1])
+
+
+
+    """Helper methods used to find the neighborhood in von Neumann swarm topology."""
+    def vnNeighborsHelper(self, numPart, particles):
         width = 0
         height = 0
         if numPart == 16:
@@ -78,9 +81,10 @@ class Neighborhood:
         else:
             width = 7
             height = 7
-        topology = [[0] * width] * height
+        topology = [[None] * width] * height
         i = 0
-        while i < len(particles):
+        while i < numPart - 1:
+            #modulo population of the topology
             rollover = 0
             while rollover < width:
                 horizontal = i % width
@@ -89,65 +93,49 @@ class Neighborhood:
                 i = i + 1
         return (topology, width, height)
 
-    def vnBestNeighbor(self, particles, curScore, position, curIndex, prevNeighbors):
-        shape = prevNeighbors
-        if shape == None:
-            shape = self.vnBestNeighborHelper(particles)
-        loBest = curScore
-        loBestLocation = position
-        #shape = self.vnBestNeighborHelper(particles)
-        topology = shape[0]
-        width = curIndex % shape[1]
-        height = curIndex // shape[2]
+    """Helper method used to determine a particle's neighbors in Von Neumann
+    topology. Uses the list of particles and the current particle's index to
+    update the self.neighbors instance variable. Calls vnNeighborsHelper to do so."""
+    def vnNeighbors(self, particles, curIndex):
+        neighborhood = self.vnNeighborsHelper(len(particles), particles)
+        topology = neighborhood[0]
+        width = curIndex % neighborhood[1]
+        height = curIndex // neighborhood[2]
         #Add left & above neighbors to neighbors list
-        neighbors = []
-        neighbors.append(topology[width - 1][height])
-        neighbors.append(topology[width][height - 1])
+        self.neighbors.append(topology[width - 1][height])
+        self.neighbors.append(topology[width][height - 1])
         #get neighbor to the right
-        if width + 1 <= (shape[1] - 2):
-            neighbors.append(topology[width + 1][height])
+        if width + 1 <= (neighborhood[1] - 2):
+            self.neighbors.append(topology[width + 1][height])
         else:
-            neighbors.append(topology[0][height])
-        #get neigbor below
-        if height + 1 <= shape[2] - 2:
-            neighbors.append(topology[width][height + 1])
+            self.neighbors.append(topology[0][height])
+        #get neighbor below
+        if height + 1 <= neighborhood[2] - 2:
+            self.neighbors.append(topology[width][height + 1])
         else:
-            neighbors.append(topology[width][0])
-        for neighbor in neighbors:
-            if neighbor.getFunctionValue() < loBest:
-                loBest = neighbor.getFunctionValue()
-                loBestLocation = neighbor.getLocation()
-        return (loBestLocation, shape)
+            self.neighbors.append(topology[width][0])
 
 
-    #Helper method used to find the best neighbor in random swarm topology
-    #Uses the list of particles, the evaluation of the current particle, the
-    #current particle's position, and the list of its previous neighbors to
-    #find the best location found so far in the swarm.
-    def raBestNeighbor(self, particles, curScore, position, prevNeighbors):
-        if random.random() <= 0.2 and  prevNeighbors != None:
-            loBest = curScore
-            loBestLocation = position
-            for i in range(len(prevNeighbors) - 1):
-                curPart = particles[prevNeighbors[i]]
-                curLocation = curPart.getLocation()
-                curVal = curPart.getFunctionValue()
-                if curVal < loBest:
-                    loBest = curVal
-                    loBestLocation = curLocation
-            return (loBestLocation, prevNeighbors)
+    """Helper method used to find the best neighbor in random swarm topology
+    Uses the list of particles, and the current index to create a particles
+    random neighborhood if the threshold criteria are met."""
+    def raNeighbors(self, particles, curIndex):
+        if random.random() <= 0.8 and len(self.neighbors) != 0:
+            pass
         else:
-            neighborhoodSize = random.randint(0, len(particles))
-            loBest = curScore
-            loBestLocation = position
-            neighborhood = []
+            self.neighbors = []
+            neighborhoodSize = 5
+            neighborhood = set()
+            neighbors = []
+            indexes = []
+            #Create a list of all indexes other than the curIndex
+            for i in range(curIndex):
+                indexes.append(i)
+            for i in range(curIndex + 1, len(particles)):
+                indexes.append(i)
+            #Choose neighbor indexes
             while len(neighborhood) < neighborhoodSize:
-                neighborhood.append(random.randint(0, len(particles)))
-            neighborhood = set(neighborhood)
-            neighbors = sorted(neighborhood)
-            for i in range(len(neighbors) - 1):
-                curPart = particles[neighbors[i]]
-                if curPart.getFunctionValue() < loBest:
-                    loBest = curPart.getFunctionValue()
-                    loBestLocation = curPart.getLocation()
-            return (loBestLocation, neighbors)
+                neighborhood.add(random.choice(indexes))
+            neighborhood = list(neighborhood)
+            for i in range(len(neighborhood) - 1):
+                self.neighbors.append(particles[neighborhood[i]])
