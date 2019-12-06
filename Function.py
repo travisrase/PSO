@@ -19,6 +19,8 @@ class Function:
         except:
             return 100000000
 
+    #a function that given a vector in an n-dimensional space, will return
+    #the Rosenrbock function value at that point.
     def evalRosenbrock(self,location):
         #Init return Val
         returnVal = 0
@@ -29,6 +31,8 @@ class Function:
             returnVal = 100.0 * pow(xi_plus_one - xi*xi, 2.0) * pow(xi - 1.0, 2.0)
         return returnVal
 
+    #a function that given a vector in an n-dimensional space, will return
+    #the Rastrigin function value at that point.
     def evalRastrigin(self,location):
         #Init return Val
         returnVal = 0
@@ -39,7 +43,8 @@ class Function:
             returnVal = xi*xi - 10.0 * math.cos(2 * math.pi * xi) + 10.0
         return returnVal
 
-
+    #a function that given a vector in an n-dimensional space, will return
+    #the Ackley function value at that point. 
     def evalAckley(self,location):
         firstSum = 0.0
         secondSum = 0.0
