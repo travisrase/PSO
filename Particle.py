@@ -20,38 +20,34 @@ class Particle:
         #constriction factor
         self.constrictionFactor = 0.7298
 
-    #to string for particle
     def __str__(self):
         return self.location
 
-    #this function will randomly initialize a particle within defined boundaries
     def randomInit(self):
         self.initPosition()
         self.initVelocity()
 
-    #this function will initialize the postion of a particle randomly within
-    #a range of set values away from the minimum
     def initPosition(self):
         rng = []
-        if self.funcType == "rok":
-            rng = (15.0, 30.0)
-        elif self.funcType == "ras":
-            rng = (16.0, 32.0)
-        else:
-            rng = (2.56, 5.12)
+        rng = (-1.0, 1.0)
+        # if self.funcType == "rok":
+        #     rng = (15.0, 30.0)
+        # elif self.funcType == "ras":
+        #     rng = (16.0, 32.0)
+        # else:
+        #     rng = (2.56, 5.12)
         for i in range(self.dimension):
             self.location += [random.uniform(*rng)]
 
-    #this function will initialize the velocity of the partciles based on
-    #the type of function we are optimizing
     def initVelocity(self):
         rng = []
-        if self.funcType == "rok":
-            rng = (-2.0, 2.0)
-        elif self.funcType == "ras":
-            rng = (-2.0, 4.0)
-        else:
-            rng = (-2.0, 4.0)
+        rng = (-1.0, 1.0)
+        # if self.funcType == "rok":
+        #     rng = (-2.0, 2.0)
+        # elif self.funcType == "ras":
+        #     rng = (-2.0, 4.0)
+        # else:
+        #     rng = (-2.0, 4.0)
         for i in range(self.dimension):
             self.velocity += [random.uniform(*rng)]
 
@@ -67,7 +63,6 @@ class Particle:
     def pBest(self):
         return self.pBest
 
-    #get the value of the particles personal best
     def pBestValue(self):
         return self.function.eval(self.pBest)
 
@@ -75,9 +70,6 @@ class Particle:
     def getFunctionValue(self):
         return self.function.eval(self.location)
 
-    #this method will update the location of the particle based on a velocity
-    #computed based on the location of its personal best and a neighborhood best
-    #location
     def updateLocation(self,nhBest):
         pbAc = self.pBestAcceleration()
         nbAc = self.nBestAcceleration(nhBest)
@@ -121,8 +113,6 @@ class Particle:
             #constrict
             self.velocity[i] = self.velocity[i] * self.constrictionFactor
 
-    #this function will update the personal best location of the particle
-    #if its current location is better than its historic personal best
     def updatePersonalBest(self):
         currentFuncVal = self.getFunctionValue()
         pBestFuncVal = self.function.eval(self.pBest)
